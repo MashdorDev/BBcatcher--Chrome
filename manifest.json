@@ -1,24 +1,28 @@
 {
-  "manifest_version": 2,
   "name": "BBcatcher",
-  "description": "Brings all you Exams quizes and homework to your schadule ",
   "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Brings all you Exams quiz's and homework to your schedule ",
   "icons": {
     "64": "icons/icon.png"
   },
   "background": {
     "scripts": [
-      "background_script.js"
+      "background/authorize.js",
+      "background/userinfo.js",
+      "background/main.js"
     ]
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "identity",
+    "notifications",
+    "*://www.googleapis.com/*",
+    "*://accounts.google.com/*"
   ],
   "content_scripts": [
     {
-      "matches": [
-        "https://learn.humber.ca/ultra/*"
-      ],
+      "matches": ["https://learn.humber.ca/ultra/*"],
       "js": ["scripts/content_script.js"],
       "css": ["styles/content_script.css"],
       "run_at": "document_end"
@@ -28,7 +32,6 @@
     "default_icon": {
       "64": "icons/icon.png"
     },
-    "default_popup": "browserAction/index.html",
     "default_title": "BBcatcher"
   },
   "page_action": {
@@ -39,6 +42,6 @@
     "default_title": "BBcatcher"
   },
   "options_ui": {
-    "page": "options/index.html"
+    "page": "options/options.html"
   }
 }

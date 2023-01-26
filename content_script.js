@@ -58,14 +58,12 @@ function scrollToBottom() {
         console.log("%cDone scrolling", "color: green; font-size: 20px");
         clearInterval(scrollWindow);
         console.log("%cdeleted interval", "color: green; font-size: 20px");
-        
+
         // const items = document.getElementsByClassName("due-item-block");
         // console.log(items, "items");
         resolve();
       }
     }, 1000);
-
-    
 
     // console.log(document.getElementById("deadlineContainer").childNodes[0]);
     // const items = document.getElementsByClassName("due-item-block");
@@ -77,43 +75,36 @@ function scrollToBottom() {
   });
 }
 
- function formatInfo(items) {
-    return new Promise((resolve, reject) => {
+function formatInfo(items) {
+  return new Promise((resolve, reject) => {
     const items = document.getElementsByClassName("deadlines");
     let itemsArray = items[0].children[0].children[0].children;
-    itemsArray = Array.from(itemsArray).filter((item) => item.childElementCount == 2);
-
+    itemsArray = Array.from(itemsArray).filter(
+      (item) => item.childElementCount == 2
+    );
 
     let dueDates = [];
-    const newArray = itemsArray.map((item,i) => {
+    const newArray = itemsArray.map((item, i) => {
+      item = [...item.children[1].children[0].children];
 
-     item = [...item.children[1].children[0].children];
+      item.map((item, i) => {
+        item = item.children[1].children;
 
+        baseURL = "https://learn.humber.ca/ultra/courses/";
+        courseCode = item[1].lastElementChild.href.split("/")[5];
 
-    item.map((item,i) => {
-      item = item.children[1].children;
+        let dueObject = {
+          courseName: item[1].innerText.split(":")[3],
+          courseCode: item[1].innerText.split("∙")[1].split(": ")[0],
+          dueName: item[0].innerText.split(",")[0],
+          dueDate: item[1].innerText.split(":")[1].split(",")[0],
+          dueTime: item[1].innerText.split("∙")[0].split(","),
+          courseLink: baseURL + courseCode + "/outline",
+        };
 
-
-      baseURL = "https://learn.humber.ca/ultra/courses/";
-      courseCode = item[1].lastElementChild.href.split('/')[5];
-
-
-      let dueObject = {
-        courseName: item[1].innerText.split(':')[3],
-        courseCode: item[1].innerText.split('∙')[1].split(': ')[0],
-        dueName: item[0].innerText.split(",")[0],
-        dueDate: item[1].innerText.split(":")[1].split(',')[0],
-        dueTime: item[1].innerText.split("∙")[0].split(','),
-        courseLink: baseURL + courseCode + "/outline",
-      };
-
-
-      dueDates.push(dueObject);
+        dueDates.push(dueObject);
+      });
     });
-    });
-    // console.log(dueDates, "dueDates");
-
     resolve(dueDates);
   });
-  };
-
+}

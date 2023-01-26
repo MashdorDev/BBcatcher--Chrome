@@ -6,7 +6,7 @@ currentUrl = window.location.href;
 if (currentUrl !== "https://learn.humber.ca/ultra/calendar") {
   window.location.href = "https://learn.humber.ca/ultra/calendar";
 } else {
-  console.log("inside else");
+  // console.log("inside else");
   main();
 }
 
@@ -24,11 +24,67 @@ async function main() {
     );
     main();
   } else {
+    lockScreen();
     const resolvedItems = await getInfo();
-    console.log("Line 28         ");
+    console.log("Line 28");
     const formattedInfo = await formatInfo(resolvedItems);
     console.log(formattedInfo, "formattedInfo");
+    unlockScreen();
   }
+}
+
+function unlockScreen() {
+  const lockScreen = document.getElementById("lockScreen");
+  lockScreen.style.fade
+  lockScreen.remove();
+}
+
+function lockScreen() {
+  const lockScreen = document.createElement("div");
+  lockScreen.id = "lockScreen";
+  lockScreen.style.position = "fixed";
+  lockScreen.style.top = "0";
+  lockScreen.style.left = "0";
+  lockScreen.style.width = "100%";
+  lockScreen.style.height = "100%";
+  lockScreen.style.backgroundColor = "rgba(0,0,0,0.5)";
+  
+  const lockScreenText = document.createElement("div");
+  lockScreenText.id = "lockScreenText";
+  lockScreenText.style.position = "absolute";
+  lockScreenText.style.top = "60%";
+  lockScreenText.style.left = "50%";
+  lockScreenText.style.transform = "translate(-50%, 50%)";
+  lockScreenText.style.color = "white";
+  lockScreenText.style.fontSize = "30px";
+  lockScreenText.style.fontWeight = "bold";
+  lockScreenText.innerText = "Loading...";
+
+let figure = document.createElement("figure");
+let dot1 = document.createElement("div");
+let dot2 = document.createElement("div");
+let dot3 = document.createElement("div");
+let dot4 = document.createElement("div");
+let dot5 = document.createElement("div");
+
+dot1.classList.add("dot", "white");
+dot2.classList.add("dot");
+dot3.classList.add("dot");
+dot4.classList.add("dot");
+dot5.classList.add("dot");
+
+figure.appendChild(dot1);
+figure.appendChild(dot2);
+figure.appendChild(dot3);
+figure.appendChild(dot4);
+figure.appendChild(dot5);
+
+lockScreen.appendChild(figure);
+  
+
+lockScreen.appendChild(lockScreenText);
+document.body.appendChild(lockScreen);
+  console.log(lockScreen);
 }
 
 function getInfo() {
@@ -41,7 +97,30 @@ function getInfo() {
 
 function scrollToBottom() {
   return new Promise((resolve, reject) => {
+    var startTime, endTime;
+    let previousList = 0;
+
+    function start() {
+      startTime = new Date();
+      console.log("startTime");
+    }
+
+    function end() {
+      endTime = new Date();
+      var timeDiff = endTime - startTime; //in ms
+      // strip the ms
+      timeDiff /= 1000;
+
+      // get seconds
+      var seconds = Math.round(timeDiff);
+      console.log(seconds + " seconds");
+      return seconds;
+    }
+
+    start();
+
     const scrollWindow = window.setInterval(function () {
+      console.log("%cScrolling", "color: green; font-size: 20px");
       const deadlineContainer =
         document.getElementById("deadlineContainer").childNodes[0].childNodes[3]
           .childNodes[1];
@@ -52,26 +131,15 @@ function scrollToBottom() {
       scrollingElement =
         deadlineContainer.childNodes[1].childNodes[NumScroll - 2].offsetTop;
       deadlineContainer.scrollTop = scrollingElement;
-      if (
-        deadlineContainer.childNodes[1].childNodes[41].nodeName == "#comment"
-      ) {
+
+      console.log(end() >= 5, "currentList > previousList");
+      if (end() > 5) {
         console.log("%cDone scrolling", "color: green; font-size: 20px");
         clearInterval(scrollWindow);
-        console.log("%cdeleted interval", "color: green; font-size: 20px");
-
-        // const items = document.getElementsByClassName("due-item-block");
-        // console.log(items, "items");
+        console.log("%cDeleted interval", "color: green; font-size: 20px");
         resolve();
       }
-    }, 1000);
-
-    // console.log(document.getElementById("deadlineContainer").childNodes[0]);
-    // const items = document.getElementsByClassName("due-item-block");
-    // if (document.getElementById("deadlineContainer").childNodes[0].childNodes[3]
-    // .childNodes[1].childNodes[1].childNodes[41].nodeName == "#comment"
-    // ) {
-    //   resolve(items);
-    // }
+    }, 500);
   });
 }
 

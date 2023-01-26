@@ -19,9 +19,9 @@
       "matches": [
         "https://learn.humber.ca/ultra/*"
       ],
-      "js": ["content_script.js"],
+      "js": ["scripts/content_script.js"],
+      "css": ["styles/content_script.css"],
       "run_at": "document_end"
-
     }
   ],
   "browser_action": {

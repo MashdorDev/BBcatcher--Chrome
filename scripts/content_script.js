@@ -3,34 +3,48 @@
 console.log("Hello from your Chrome extension! - Content script");
 currentUrl = window.location.href;
 
-if (currentUrl !== "https://learn.humber.ca/ultra/calendar") {
-  window.location.href = "https://learn.humber.ca/ultra/calendar";
-} else {
-  // console.log("inside else");
+if (currentUrl == "https://learn.humber.ca/ultra/calendar") {
+  console.log("inside if statement");
   main();
+}else{
+  console.log("inside else statement");
+  window.location.href = "https://learn.humber.ca/ultra/calendar" ;
+
+
 }
 
-const intervalID = setTimeout(main, 4000);
+
+// let working = true;
+
+//  intervalID = setTimeout(main, 4000);
+// while (working) {
+//   console.log("inside while loop");
+//   main();
+// }
+// main();
 
 async function main() {
-  document.getElementById("bb-calendar1-deadline").click();
-  const items = document.getElementsByClassName("due-item-block");
-  let resolvedItems;
-
-  if (!items) {
-    console.log(
-      "%cno items",
-      "color: red; background: yellow; font-size: 30px"
-    );
-    main();
-  } else {
-    lockScreen();
-    const resolvedItems = await getInfo();
-    console.log("Line 28");
-    const formattedInfo = await formatInfo(resolvedItems);
-    console.log(formattedInfo, "formattedInfo");
-    unlockScreen();
-  }
+    console.log("inside main");
+    document.getElementById("bb-calendar1-deadline").click();
+    console.log(document.getElementById("bb-calendar1-deadline"));
+    const items = document.getElementsByClassName("due-item-block");
+    let resolvedItems;
+    if (!items) {
+      console.log(
+        "%cno items",
+        "color: red; background: yellow; font-size: 30px"
+      );
+      main();
+    } else {
+      lockScreen();
+      const resolvedItems = await getInfo();
+      console.log("Line 28");
+      const formattedInfo = await formatInfo(resolvedItems);
+      console.log(formattedInfo, "formattedInfo");
+      unlockScreen();
+      delete intervalID;
+      working = false;
+    }
 }
 
 function unlockScreen() {
@@ -48,7 +62,7 @@ function lockScreen() {
   lockScreen.style.width = "100%";
   lockScreen.style.height = "100%";
   lockScreen.style.backgroundColor = "rgba(0,0,0,0.5)";
-  
+
   const lockScreenText = document.createElement("div");
   lockScreenText.id = "lockScreenText";
   lockScreenText.style.position = "absolute";
@@ -80,7 +94,7 @@ figure.appendChild(dot4);
 figure.appendChild(dot5);
 
 lockScreen.appendChild(figure);
-  
+
 
 lockScreen.appendChild(lockScreenText);
 document.body.appendChild(lockScreen);
@@ -176,3 +190,6 @@ function formatInfo(items) {
     resolve(dueDates);
   });
 }
+
+
+console.log("end of code");

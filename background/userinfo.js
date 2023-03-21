@@ -13,7 +13,7 @@ function getUserInfo(accessToken) {
       method: "GET",
       headers: requestHeaders
     });
-  
+
     return fetch(driveRequest).then((response) => {
       if (response.status === 200) {
         return response.json();
@@ -21,5 +21,4 @@ function getUserInfo(accessToken) {
         throw response.status;
       }
     });
-  
   }

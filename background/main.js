@@ -6,11 +6,11 @@ function notifyUser(user) {
       "title": "Google info",
       "message": `Hi ${user.name}`
     });}
-  
+
   function logError(error) {
     console.error(`Error: ${error}`);
   }
-  
+
   /**
   When the button's clicked:
   - get an access token using the identity API

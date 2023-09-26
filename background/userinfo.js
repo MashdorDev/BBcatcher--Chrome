@@ -1,11 +1,4 @@
-/**
-Fetch the user's info, passing in the access token in the Authorization
-HTTP request header.
-*/
-
-/* exported getUserInfo */
-
-function getUserInfo(accessToken) {
+async function getUserInfo(accessToken) {
   console.log("Access token inside getUserInfo: ", accessToken);
   const requestURL = "https://www.googleapis.com/oauth2/v1/userinfo?alt=json";
   const requestHeaders = new Headers();
@@ -15,12 +8,16 @@ function getUserInfo(accessToken) {
     headers: requestHeaders
   });
 
-  return fetch(driveRequest).then((response) => {
-    if (response.status === 200) {
-      return response.json();
-    } else {
-      throw response.status;
-    }
-  });
+  const response = await fetch(driveRequest);
 
+  if (response.status === 200) {
+    const user = await response.json();
+
+    // Store the user info in local storage
+    localStorage.setItem('userInfo', JSON.stringify(user));
+
+    return user;
+  } else {
+    throw new Error(`Failed to fetch user info, status: ${response.status}`);
+  }
 }

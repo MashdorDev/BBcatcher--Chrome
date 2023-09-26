@@ -1,59 +1,51 @@
-// Put all the javascript code here, that you want to execute after page load.
+const BLACKBOARD_URL = "https://learn.humber.ca/ultra/calendar";
 
-console.log("Hello from your Chrome extension! - Content script");
-currentUrl = window.location.href;
-
-if (currentUrl == "https://learn.humber.ca/ultra/calendar") {
-  console.log("inside if statement");
-  main();
-}else{
-  console.log("inside else statement");
-  window.location.href = "https://learn.humber.ca/ultra/calendar" ;
-
-
-}
-
-
-// let working = true;
-
-//  intervalID = setTimeout(main, 4000);
-// while (working) {
-//   console.log("inside while loop");
-//   main();
-// }
-// main();
-
+// Main function to execute the script
 async function main() {
-    console.log("inside main");
-    document.getElementById("bb-calendar1-deadline").click();
-    console.log(document.getElementById("bb-calendar1-deadline"));
-    const items = document.getElementsByClassName("due-item-block");
-    let resolvedItems;
-    if (!items) {
-      console.log(
-        "%cno items",
-        "color: red; background: yellow; font-size: 30px"
-      );
-      main();
-    } else {
-      lockScreen();
-      const resolvedItems = await getInfo();
-      console.log("Line 28");
-      const formattedInfo = await formatInfo(resolvedItems);
-      console.log(formattedInfo, "formattedInfo");
-      unlockScreen();
-      delete intervalID;
-      working = false;
-    }
+  if (window.location.href !== BLACKBOARD_URL) {
+    navigateToBlackboard();
+    return;
+  }
+
+  lockScreen();
+
+  try {
+    await clickDeadline();
+    const dueDates = await fetchAndFormatDueDates();
+    unlockScreen();
+    console.log(dueDates);
+    chrome.runtime.sendMessage({type: 'ADD_TO_CALENDAR', data: dueDates});
+  } catch (error) {
+    console.error("Error in main:", error);
+    unlockScreen();
+  }
 }
 
-function unlockScreen() {
-  const lockScreen = document.getElementById("lockScreen");
-  lockScreen.style.fade
-  lockScreen.remove();
+// Navigate to the Blackboard calendar URL
+function navigateToBlackboard() {
+  window.location.href = BLACKBOARD_URL;
 }
 
+// Click the deadline element on the Blackboard calendar
+async function clickDeadline() {
+  const deadlineElement = document.getElementById("bb-calendar1-deadline");
+  if (!deadlineElement) {
+    throw new Error("Deadline element not found.");
+  }
+  deadlineElement.click();
+}
+
+// Fetch and format due dates from the Blackboard calendar
+async function fetchAndFormatDueDates() {
+  await scrollToBottom();
+  const dueDates = await formatInfo();
+  return dueDates;
+}
+
+// Lock the screen while processing
 function lockScreen() {
+  // Your existing lockScreen code here
+
   const lockScreen = document.createElement("div");
   lockScreen.id = "lockScreen";
   lockScreen.style.position = "fixed";
@@ -101,15 +93,17 @@ document.body.appendChild(lockScreen);
   console.log(lockScreen);
 }
 
-function getInfo() {
-  return new Promise(async (resolve, reject) => {
-    const items = await scrollToBottom();
-    console.log("%cdone getting Info", "color: green; font-size: 20px");
-    resolve(items);
-  });
+// Unlock the screen after processing
+function unlockScreen() {
+
+  const lockScreen = document.getElementById("lockScreen");
+  lockScreen.style.fade
+  lockScreen.remove();
 }
 
-function scrollToBottom() {
+// Scroll to the bottom of the Blackboard calendar to load all items
+async function scrollToBottom() {
+
   return new Promise((resolve, reject) => {
     var startTime, endTime;
     let previousList = 0;
@@ -157,39 +151,42 @@ function scrollToBottom() {
   });
 }
 
-function formatInfo(items) {
-  return new Promise((resolve, reject) => {
-    const items = document.getElementsByClassName("deadlines");
-    let itemsArray = items[0].children[0].children[0].children;
-    itemsArray = Array.from(itemsArray).filter(
-      (item) => item.childElementCount == 2
-    );
+// Format the information about due dates
+async function formatInfo() {
+  const items = document.getElementsByClassName("deadlines");
+  if (!items || items.length === 0) {
+    throw new Error("No deadlines found.");
+  }
 
-    let dueDates = [];
-    const newArray = itemsArray.map((item, i) => {
-      item = [...item.children[1].children[0].children];
+  let itemsArray = items[0].children[0].children[0].children;
+  itemsArray = Array.from(itemsArray).filter((item) => item.childElementCount === 2);
 
-      item.map((item, i) => {
-        item = item.children[1].children;
+  const dueDates = [];
 
-        baseURL = "https://learn.humber.ca/ultra/courses/";
-        courseCode = item[1].lastElementChild.href.split("/")[5];
+  for (const item of itemsArray) {
+    const elements = Array.from(item.children[1].children[0].children);
+    for (const element of elements) {
+      const infoElements = element.children[1].children;
+      const baseURL = "https://learn.humber.ca/ultra/courses/";
+      const courseCode = infoElements[1].lastElementChild.href.split("/")[5];
 
-        let dueObject = {
-          courseName: item[1].innerText.split(":")[3],
-          courseCode: item[1].innerText.split("∙")[1].split(": ")[0],
-          dueName: item[0].innerText.split(",")[0],
-          dueDate: item[1].innerText.split(":")[1].split(",")[0],
-          dueTime: item[1].innerText.split("∙")[0].split(","),
-          courseLink: baseURL + courseCode + "/outline",
-        };
+      const dueObject = {
+        courseName: infoElements[1].innerText.split(":")[3],
+        courseCode: infoElements[1].innerText.split("∙")[1].split(": ")[0],
+        dueName: infoElements[0].innerText.split(",")[0],
+        dueDate: infoElements[1].innerText.split(":")[1].split(",")[0],
+        dueTime: infoElements[1].innerText.split("∙")[0].split(","),
+        courseLink: `${baseURL}${courseCode}/outline`,
+      };
 
-        dueDates.push(dueObject);
-      });
-    });
-    resolve(dueDates);
-  });
+      dueDates.push(dueObject);
+    }
+  }
+
+  return dueDates;
 }
 
-
-console.log("end of code");
+// Entry point
+main().catch((error) => {
+  console.error("Error in script:", error);
+});

@@ -8,9 +8,9 @@
   },
   "background": {
     "scripts": [
+      "background/main.js",
       "background/authorize.js",
-      "background/userinfo.js",
-      "background/main.js"
+      "background/userinfo.js"
     ]
   },
   "permissions": [
@@ -31,6 +31,8 @@
       "run_at": "document_end"
     }
   ],
+  "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'",
+
   "browser_action": {
     "default_icon": {
       "64": "icons/icon.png"

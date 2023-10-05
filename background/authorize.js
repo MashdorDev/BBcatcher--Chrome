@@ -1,7 +1,7 @@
 const REDIRECT_URL = browser.identity.getRedirectURL();
 const CLIENT_ID =
   "597587515735-9gfojisq4ih1o5mi1cj9a8h0dpqu70a7.apps.googleusercontent.com";
-const SCOPES = ["openid", "email", "profile", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"];
+const SCOPES = ["openid", "email", "profile", "https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/tasks"];
 const AUTH_URL = `https://accounts.google.com/o/oauth2/auth\
 ?client_id=${CLIENT_ID}\
 &response_type=token\

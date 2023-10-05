@@ -14,9 +14,9 @@ async function main() {
     const dueDates = await fetchAndFormatDueDates();
     unlockScreen();
     console.log(dueDates);
-    chrome.runtime.sendMessage({type: 'ADD_TO_CALENDAR', data: dueDates});
+    browser.runtime.sendMessage({ type: "ADD_TO_CALENDAR", data: dueDates });
   } catch (error) {
-    console.error("Error in main:", error);
+    logError(error);
     unlockScreen();
   }
 }
@@ -66,44 +66,41 @@ function lockScreen() {
   lockScreenText.style.fontWeight = "bold";
   lockScreenText.innerText = "Loading...";
 
-let figure = document.createElement("figure");
-let dot1 = document.createElement("div");
-let dot2 = document.createElement("div");
-let dot3 = document.createElement("div");
-let dot4 = document.createElement("div");
-let dot5 = document.createElement("div");
+  let figure = document.createElement("figure");
+  let dot1 = document.createElement("div");
+  let dot2 = document.createElement("div");
+  let dot3 = document.createElement("div");
+  let dot4 = document.createElement("div");
+  let dot5 = document.createElement("div");
 
-dot1.classList.add("dot", "white");
-dot2.classList.add("dot");
-dot3.classList.add("dot");
-dot4.classList.add("dot");
-dot5.classList.add("dot");
+  dot1.classList.add("dot", "white");
+  dot2.classList.add("dot");
+  dot3.classList.add("dot");
+  dot4.classList.add("dot");
+  dot5.classList.add("dot");
 
-figure.appendChild(dot1);
-figure.appendChild(dot2);
-figure.appendChild(dot3);
-figure.appendChild(dot4);
-figure.appendChild(dot5);
+  figure.appendChild(dot1);
+  figure.appendChild(dot2);
+  figure.appendChild(dot3);
+  figure.appendChild(dot4);
+  figure.appendChild(dot5);
 
-lockScreen.appendChild(figure);
+  lockScreen.appendChild(figure);
 
-
-lockScreen.appendChild(lockScreenText);
-document.body.appendChild(lockScreen);
+  lockScreen.appendChild(lockScreenText);
+  document.body.appendChild(lockScreen);
   console.log(lockScreen);
 }
 
 // Unlock the screen after processing
 function unlockScreen() {
-
   const lockScreen = document.getElementById("lockScreen");
-  lockScreen.style.fade
+  lockScreen.style.fade;
   lockScreen.remove();
 }
 
 // Scroll to the bottom of the Blackboard calendar to load all items
 async function scrollToBottom() {
-
   return new Promise((resolve, reject) => {
     var startTime, endTime;
     let previousList = 0;
@@ -159,7 +156,9 @@ async function formatInfo() {
   }
 
   let itemsArray = items[0].children[0].children[0].children;
-  itemsArray = Array.from(itemsArray).filter((item) => item.childElementCount === 2);
+  itemsArray = Array.from(itemsArray).filter(
+    (item) => item.childElementCount === 2
+  );
 
   const dueDates = [];
 
@@ -188,5 +187,33 @@ async function formatInfo() {
 
 // Entry point
 main().catch((error) => {
-  console.error("Error in script:", error);
+  logError(error);
 });
+
+function logError(error, userInfo = null) {
+  const timestamp = new Date().toISOString();
+  let environmentInfo = "Environment info not available";
+
+  if (typeof process !== "undefined" && process.version) {
+    environmentInfo = `Node Version: ${process.version}`;
+  } else if (typeof navigator !== "undefined") {
+    environmentInfo = `Browser: ${navigator.userAgent}`;
+  }
+
+  const errorType = error.constructor.name;
+  const errorCode = error.code || "N/A"; // Some errors have a 'code' property
+
+  console.error(`--- Error Log Start ---`);
+  console.error(`Timestamp: ${timestamp}`);
+  console.error(`Error Type: ${errorType}`);
+  console.error(`Error Code: ${errorCode}`);
+  console.error(`Message: ${error.message}`);
+  console.error(`Stack Trace: ${error.stack}`);
+  console.error(`Environment: ${environmentInfo}`);
+
+  if (userInfo) {
+    console.error(`User Info: ${JSON.stringify(userInfo)}`);
+  }
+
+  console.error(`--- Error Log End ---`);
+}

@@ -1,7 +1,7 @@
 document.getElementById("homework").addEventListener("click", getInfo);
 
 
-// console.log(browser.identity.getRedirectURL());
+console.log(browser.identity.getRedirectURL());
 
 // function getInfo()
 

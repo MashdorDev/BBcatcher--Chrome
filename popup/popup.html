@@ -7,20 +7,29 @@
     <title>Document</title>
     <script defer src="popup.js"></script>
     <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
     />
+    <link defer rel="stylesheet" href="popup.css">
   </head>
   <body>
-    <h1 class="content">Welcome, <span id="username"></span>!</h1>
-    <img id="userImage" src="" alt="User Image" />
+    <div id="main">
+    <div id="user" >
+      <h1 class="content">Welcome, <span id="username">Dor Zairi</span>!</h1>
+      <img id="userImage" src="https://lh3.googleusercontent.com/a/ACg8ocIzzF4ipEGXDUEVDgrYfI7TnGDGh7GBrbw1OoW6he2tFqLE=s96-c" alt="User Image">
+    </div>
     <button class="button is-info is-outlined" id="homework">
       Get Home Work
     </button>
-    <button id="settings">Settings</button>
+    </div>
+  </div>
+    <!-- TODO add settings like Humber events -->
+    <!-- <button id="settings">Settings</button> -->
     <section id="homeworkList"></section>
     <!-- Adding login button for Google OAuth -->
     <button id="loginBtn">Login with Google</button>
+
+    <hr class="rounded">
 
     <p class="buttons">
       <a class="button" href="https://github.com/MashdorDev/BBcatcher">

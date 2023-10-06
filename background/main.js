@@ -81,7 +81,7 @@ async function createTask(token, title, notes, due) {
     status: "needsAction"  // Optional, either "needsAction" or "completed"
   };
 
-  console.log("Task payload:", JSON.stringify(task));  // Debug log to check the payload
+  // console.log("Task payload:", JSON.stringify(task));  // Debug log to check the payload
 
   const tasklistId = '@default';  // Replace with your task list ID if not using the default list
 

@@ -1,25 +1,75 @@
-const BLACKBOARD_URL = "https://learn.humber.ca/ultra/calendar";
+let BLACKBOARD_URL = "https://learn.humber.ca/ultra/calendar";
 
-// Main function to execute the script
+// This is the URL of the Blackboard calendar
+if (window.location.href === "https://learn.humber.ca/ultra/calendar") {
+  console.log("You are on the right page");
+}else{
+  console.log("You are not on the right page");
+  BLACKBOARD_URL = "https://learn.humber.ca/ultra/calendar";
+}
+
+
 async function main() {
   if (window.location.href !== BLACKBOARD_URL) {
-    navigateToBlackboard();
-    return;
+      navigateToBlackboard();
+      return;
+  } else {
+      console.log("You are on the right page");
   }
 
   lockScreen();
 
   try {
-    await clickDeadline();
-    const dueDates = await fetchAndFormatDueDates();
-    unlockScreen();
-    console.log(dueDates);
-    browser.runtime.sendMessage({ type: "ADD_TO_CALENDAR", data: dueDates });
+      await clickDeadline();
+      const dueDates = await fetchAndFormatDueDates();
+      unlockScreen();
+
+      const oldHomework = getCurrentHomework();
+      const newHomeworkItems = compareHomework(oldHomework, dueDates);
+      storeCurrentHomework(dueDates);  // Always update the stored homework to the latest data
+
+      if (newHomeworkItems.length > 0) {
+          console.log(newHomeworkItems , "newHomeworkItems");
+          browser.runtime.sendMessage({ type: "ADD_TO_CALENDAR", data: newHomeworkItems });
+      } else {
+          console.log('You are all up to date with the homework');
+      }
+
   } catch (error) {
-    logError(error);
-    unlockScreen();
+      logError(error);
+      unlockScreen();
   }
 }
+
+function compareHomework(oldHomework, newHomework) {
+  console.log("Comparing homework");
+  if (!oldHomework) return newHomework;  // If there's no old homework, all of the new homework is considered new
+console.log(oldHomework , "oldHomework");
+  const newItems = newHomework.filter(newItem =>
+      !oldHomework.some(oldItem =>
+          oldItem.courseCode === newItem.courseCode &&
+          oldItem.dueName === newItem.dueName &&
+          oldItem.dueDate === newItem.dueDate &&
+          JSON.stringify(oldItem.dueTime) === JSON.stringify(newItem.dueTime)
+      )
+  );
+
+  return newItems;
+}
+
+function storeCurrentHomework(dueDates) {
+  console.log("Storing current homework");
+  localStorage.setItem('currentHomework', JSON.stringify(dueDates));
+}
+
+function getCurrentHomework() {
+  console.log("Getting current homework");
+  const storedHomework = localStorage.getItem('currentHomework');
+  return storedHomework ? JSON.parse(storedHomework) : null;
+}
+
+
+
 
 // Navigate to the Blackboard calendar URL
 function navigateToBlackboard() {

@@ -1,19 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script defer src="popup.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+  </head>
+  <body>
+    <h1 class="content">Welcome, <span id="username"></span>!</h1>
+    <img id="userImage" src="" alt="User Image" />
+    <button class="button is-info is-outlined" id="homework">
+      Get Home Work
+    </button>
+    <button id="settings">Settings</button>
+    <section id="homeworkList"></section>
+    <!-- Adding login button for Google OAuth -->
+    <button id="loginBtn">Login with Google</button>
 
-</head>
-<body>
-    <h1>Welcome, <span id="username"></span>!</h1>
-    <img id="userImage" src="" alt="User Image">
-    <button id="homework">Get Home Work</button>
+    <p class="buttons">
+      <a class="button" href="https://github.com/MashdorDev/BBcatcher">
+        <span class="icon">
+          <image src="https://github.com/favicon.ico"></image>
+        </span>
+        <span>GitHub Repo</span>
+      </a>
+      <a class="button is-info" href="https://twitter.com/mashdor">
+        <span class="icon">
+          <image src="https://twitter.com/favicon.ico"></image>
+        </span>
+        <span>@Mashdor</span>
+      </a>
+      <a class="button is-info" href="https://www.linkedin.com/in/dorz/">
+        <span class="icon is-small">
+          <image src="https://www.linkedin.com/favicon.ico"></image>
+        </span>
+        <span>linkedin</span>
+      </a>
+      <button id="donate" class="button is-danger">
+        <span class="icon is-small">
+          <image src="https://ko-fi.com/favicon.ico"></image>
+        </span>
+        <span>Donate</span>
+      </button>
+    </p>
+    <br>
 
-</body>
+  </body>
+  <iframe  id='kofiframe' src='https://ko-fi.com/dorzairidev/?hidefeed=true&widget=true&embed=true&preview=true' style='border:none;width:100%;padding:4px;background:#f9f9f9; display: none;' height='712' title='dorzairidev'></iframe>
 </html>
-<!-- Adding login button for Google OAuth -->
-<button id="loginBtn">Login with Google</button>

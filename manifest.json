@@ -4,49 +4,41 @@
   "manifest_version": 2,
   "description": "Brings all you Exams quiz's and homework to your schedule ",
   "icons": {
-      "64": "icons/icon.png"
+    "64": "icons/icon.png"
   },
   "background": {
-      "scripts": [
-          "background/main.js",
-          "background/authorize.js",
-          "background/userinfo.js"
-      ]
+    "scripts": [
+      "background/main.js",
+      "background/authorize.js",
+      "background/userinfo.js"
+    ]
   },
   "permissions": [
-      "<all_urls>",
-      "host_permission",
-      "webNavigation",
-      "activeTab",
-      "identity",
-      "notifications",
-      "*://www.googleapis.com/*",
-      "*://accounts.google.com/*"
+    "<all_urls>",
+    "webNavigation",
+    "activeTab",
+    "identity",
+    "notifications",
+    "*://www.googleapis.com/*",
+    "*://accounts.google.com/*"
   ],
   "content_scripts": [
-      {
-          "matches": [
-              "https://learn.humber.ca/ultra/*"
-          ],
-          "js": [
-              "popup/popup.js",
-              "content_script.js"
-          ],
-          "css": [
-              "styles/content_script.css"
-          ],
-          "run_at": "document_end"
-      }
+    {
+      "matches": ["https://learn.humber.ca/ultra/*"],
+      "js": ["popup/popup.js", "content_script.js"],
+      "css": ["styles/content_script.css"],
+      "run_at": "document_end"
+    }
   ],
   "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'",
   "browser_action": {
-      "default_icon": {
-          "64": "icons/icon.png"
-      },
-      "default_title": "BBcatcher",
-      "default_popup": "popup/popup.html"
+    "default_icon": {
+      "64": "icons/icon.png"
+    },
+    "default_title": "BBcatcher",
+    "default_popup": "popup/popup.html"
   },
-  "options_ui": {
-      "page": "options/options.html"
+  "//options_ui": {
+    "page": "options/options.html"
   }
 }

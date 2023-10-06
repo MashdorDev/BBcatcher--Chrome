@@ -1,0 +1,44 @@
+body{
+    overflow: hidden;
+    margin-right: 10%;
+  margin-left: 10%;
+  margin-top: 10%;
+  margin-bottom: 10%;
+}
+
+
+h1{
+    align: center;
+}
+html{
+    scroll-behavior: auto;
+}
+
+hr.rounded {
+    border-top: 2px solid #bbb;
+    border-radius: 2px;
+  }
+
+.buttons{
+margin: auto;
+display: flex;
+flex-direction: column;
+
+}
+
+img{
+    height: auto;
+  max-width: 128%;
+}
+
+#homework{
+    margin-top: 18%;
+}
+#main{
+    display: flex;
+  justify-content: center;
+}
+#user{
+    display: flex;
+  flex-direction: row-reverse;
+}

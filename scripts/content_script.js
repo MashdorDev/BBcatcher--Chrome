@@ -33,6 +33,9 @@ async function main() {
           browser.runtime.sendMessage({ type: "ADD_TO_CALENDAR", data: newHomeworkItems });
       } else {
           console.log('You are all up to date with the homework');
+
+          browser.runtime.sendMessage({ type: "CREATE_NOTIFICATION", message: "You are all up to date with the homework!" });
+
       }
 
   } catch (error) {

@@ -16,6 +16,7 @@
   "permissions": [
     "<all_urls>",
     "webNavigation",
+    "tabs",
     "activeTab",
     "identity",
     "notifications",

@@ -26,9 +26,9 @@
   "content_scripts": [
     {
       "matches": ["https://learn.humber.ca/ultra/*"],
-      "js": ["popup/popup.js", "content_script.js"],
+      "js": ["scripts/content_scripts.js"],
       "css": ["styles/content_script.css"],
-      "run_at": "document_end"
+      "run_at": "document_idle"
     }
   ],
   "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'",

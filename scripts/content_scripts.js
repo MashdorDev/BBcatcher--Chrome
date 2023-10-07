@@ -1,4 +1,5 @@
-let BLACKBOARD_URL = "https://learn.humber.ca/ultra/calendar";
+
+window.BLACKBOARD_URL = window.BLACKBOARD_URL || "https://learn.humber.ca/ultra/calendar";
 
 // This is the URL of the Blackboard calendar
 if (window.location.href === "https://learn.humber.ca/ultra/calendar") {

@@ -9,7 +9,7 @@ console.log(browser.identity.getRedirectURL());
 // function getInfo()
 
 function getInfo() {
-  browser.tabs.executeScript({ file: "../scripts/content_script.js" });
+  browser.tabs.executeScript({ file: "../scripts/content_scripts.js" });
 }
 
 // Add event listener for the login button
@@ -18,7 +18,6 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  checkURL();
   if (!localStorage.getItem("accessToken")) {
     document.getElementById("loginBtn").style.display = "block";
   } else {
@@ -50,19 +49,37 @@ document.getElementById("donate").addEventListener("click", function () {
 });
 
 
-function checkURL() {
+// Wrap the checkURL function in a named function expression
+// so that you can remove the event listener later if needed.
+const checkURLWrapper = function checkURL() {
   browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
     const tab = tabs[0];
     const url = tab.url;
     const homeWorkButton = document.getElementById('homework');
 
+    // Clear previous event listeners to avoid stacking multiple listeners
+    homeWorkButton.removeEventListener('click', navigateToBlackboard);
+
     if (url.includes('https://learn.humber.ca/ultra/')) {
       homeWorkButton.textContent = 'Get Home Work';
     } else {
       homeWorkButton.textContent = 'Take me to Blackboard';
-      homeWorkButton.addEventListener('click', () => {
-        browser.tabs.update(tab.id, {url: 'https://learn.humber.ca/ultra/'});
-      });
+      homeWorkButton.addEventListener('click', navigateToBlackboard);
     }
   });
+};
+
+// Define the navigation function separately to avoid redefining it every time
+function navigateToBlackboard() {
+  browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    const tab = tabs[0];
+    browser.tabs.update(tab.id, {url: 'https://learn.humber.ca/ultra/'});
+  });
 }
+
+// Call checkURL initially to set up the button based on the current URL
+checkURLWrapper();
+
+// Set up listeners for tab URL and active tab changes to re-evaluate the button state
+browser.tabs.onUpdated.addListener(checkURLWrapper, {properties: ['url']});
+browser.tabs.onActivated.addListener(checkURLWrapper);

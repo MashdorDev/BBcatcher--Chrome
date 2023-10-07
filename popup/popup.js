@@ -1,4 +1,8 @@
-document.getElementById("homework").addEventListener("click", getInfo);
+const homeWork = document.getElementById("homework");
+
+
+
+homeWork.addEventListener("click", getInfo);
 
 console.log(browser.identity.getRedirectURL());
 
@@ -14,6 +18,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
+  checkURL();
   if (!localStorage.getItem("accessToken")) {
     document.getElementById("loginBtn").style.display = "block";
   } else {
@@ -39,7 +44,25 @@ document.getElementById("donate").addEventListener("click", function () {
   // switch on and off the disply of the iframe
   if (donate.style.display === "block") {
     donate.style.display = "none";
-  } else{
+  } else {
     donate.style.display = "block";
   }
 });
+
+
+function checkURL() {
+  browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    const tab = tabs[0];
+    const url = tab.url;
+    const homeWorkButton = document.getElementById('homework');
+
+    if (url.includes('https://learn.humber.ca/ultra/')) {
+      homeWorkButton.textContent = 'Get Home Work';
+    } else {
+      homeWorkButton.textContent = 'Take me to Blackboard';
+      homeWorkButton.addEventListener('click', () => {
+        browser.tabs.update(tab.id, {url: 'https://learn.humber.ca/ultra/'});
+      });
+    }
+  });
+}

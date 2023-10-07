@@ -44,8 +44,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 function notifyUser(user) {
   browser.notifications.create({
     type: "basic",
-    title: "Google info",
-    message: `Hi ${user.name}`,
+    title: "You have logged in!",
+    iconUrl: browser.runtime.getURL("icons/icon.png"),
+    message: `Hi ${user.name} you are now connected to your google account`,
   });
 }
 

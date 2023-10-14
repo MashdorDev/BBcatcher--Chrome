@@ -1,15 +1,13 @@
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Message received in background script:", message);
   if (message.type === "CREATE_NOTIFICATION") {
     console.log("Creating notification...");
-    browser.notifications
+    browserAPI.notifications
       .create({
         type: "basic",
         title: "BBcatcher",
         message: message.message,
-        iconUrl: browser.runtime.getURL("icons/icon.png"),
-
-
+        iconUrl: browserAPI.runtime.getURL("icons/icon.png"),
       })
       .catch((error) => {
         console.error("Error creating notification:", error);

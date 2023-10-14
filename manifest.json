@@ -6,8 +6,16 @@
   "icons": {
     "64": "icons/icon.png"
   },
+  "key":"QkJjYXRjaGVyIEJ5IERvciBaYWlyaQ==",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "BBcatcher@mozilla.org",
+      "strict_min_version": "53a1"
+    }
+  },
   "background": {
     "scripts": [
+      "background/declare_browserAPI.js",
       "background/main.js",
       "background/authorize.js",
       "background/userinfo.js"

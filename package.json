@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "web-ext run --devtools --firefox=firefoxdeveloperedition -p=dev-edition-default"
+    "dev": "web-ext run --devtools --firefox=firefoxdeveloperedition -p=dev-edition-default",
+    "build": "7z a -tzip ../bbcatcher.zip *"
   }
 }

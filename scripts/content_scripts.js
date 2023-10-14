@@ -31,11 +31,11 @@ async function main() {
 
       if (newHomeworkItems.length > 0) {
           console.log(newHomeworkItems , "newHomeworkItems");
-          browser.runtime.sendMessage({ type: "ADD_TO_CALENDAR", data: newHomeworkItems });
+          browserAPI.runtime.sendMessage({ type: "ADD_TO_CALENDAR", data: newHomeworkItems });
       } else {
           console.log('You are all up to date with the homework');
 
-          browser.runtime.sendMessage({ type: "CREATE_NOTIFICATION", message: "You are all up to date with the homework!" });
+          browserAPI.runtime.sendMessage({ type: "CREATE_NOTIFICATION", message: "You are all up to date with the homework!" });
 
       }
 

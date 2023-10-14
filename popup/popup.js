@@ -1,31 +1,35 @@
+const browserAPI = window.browser || window.chrome;
+
 const homeWork = document.getElementById("homework");
-
-
-
 homeWork.addEventListener("click", getInfo);
 
-console.log(browser.identity.getRedirectURL());
-
-// function getInfo()
-
 function getInfo() {
-  browser.tabs.executeScript({ file: "../scripts/content_scripts.js" });
+  browserAPI.tabs.executeScript({ file: "../scripts/content_scripts.js" });
 }
 
 // Add event listener for the login button
 document.getElementById("loginBtn").addEventListener("click", () => {
-  browser.runtime.sendMessage({ action: "getAuthToken" });
+  browserAPI.runtime.sendMessage({ action: "getAuthToken" });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
+
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const homeWorkButton = document.getElementById("homework");
+
   if (!localStorage.getItem("accessToken")) {
-    document.getElementById("loginBtn").style.display = "block";
+    loginBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+    homeWorkButton.style.display = "none";
   } else {
-    document.getElementById("loginBtn").style.display = "none";
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+    homeWorkButton.style.display = "block";
   }
 
   // Retrieve user info and populate popup
-  browser.runtime
+  browserAPI.runtime
     .sendMessage({ action: "getUserInfo" })
     .then((user) => {
       document.getElementById("username").textContent = user.name;
@@ -34,6 +38,19 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch((err) => {
       console.error("An error occurred:", err);
     });
+});
+
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  // Remove the access token from localStorage
+  localStorage.removeItem("accessToken");
+  // Optionally, send a message to background script to invalidate the token
+  browserAPI.runtime.sendMessage({ action: "logout" });
+  // Update UI to show login button and hide other elements
+  document.getElementById("loginBtn").style.display = "block";
+  document.getElementById("homework").style.display = "none";
+  document.getElementById("username").textContent = "---";
+  document.getElementById("userImage").src = "";
 });
 
 // Add event listener for the donate button
@@ -48,32 +65,31 @@ document.getElementById("donate").addEventListener("click", function () {
   }
 });
 
-
 // Wrap the checkURL function in a named function expression
 // so that you can remove the event listener later if needed.
 const checkURLWrapper = function checkURL() {
-  browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  browserAPI.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     const tab = tabs[0];
     const url = tab.url;
-    const homeWorkButton = document.getElementById('homework');
+    const homeWorkButton = document.getElementById("homework");
 
     // Clear previous event listeners to avoid stacking multiple listeners
-    homeWorkButton.removeEventListener('click', navigateToBlackboard);
+    homeWorkButton.removeEventListener("click", navigateToBlackboard);
 
-    if (url.includes('https://learn.humber.ca/ultra/')) {
-      homeWorkButton.textContent = 'Get Home Work';
+    if (url.includes("https://learn.humber.ca/ultra/")) {
+      homeWorkButton.textContent = "Get Home Work";
     } else {
-      homeWorkButton.textContent = 'Take me to Blackboard';
-      homeWorkButton.addEventListener('click', navigateToBlackboard);
+      homeWorkButton.textContent = "Take me to Blackboard";
+      homeWorkButton.addEventListener("click", navigateToBlackboard);
     }
   });
 };
 
 // Define the navigation function separately to avoid redefining it every time
 function navigateToBlackboard() {
-  browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  browserAPI.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     const tab = tabs[0];
-    browser.tabs.update(tab.id, {url: 'https://learn.humber.ca/ultra/'});
+    browserAPI.tabs.update(tab.id, { url: "https://learn.humber.ca/ultra/" });
   });
 }
 
@@ -81,5 +97,5 @@ function navigateToBlackboard() {
 checkURLWrapper();
 
 // Set up listeners for tab URL and active tab changes to re-evaluate the button state
-browser.tabs.onUpdated.addListener(checkURLWrapper, {properties: ['url']});
-browser.tabs.onActivated.addListener(checkURLWrapper);
+browserAPI.tabs.onUpdated.addListener(checkURLWrapper, { properties: ["url"] });
+browserAPI.tabs.onActivated.addListener(checkURLWrapper);

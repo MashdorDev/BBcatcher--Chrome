@@ -1,13 +1,32 @@
-const REDIRECT_URL = browser.identity.getRedirectURL();
-const CLIENT_ID =
-  "597587515735-9gfojisq4ih1o5mi1cj9a8h0dpqu70a7.apps.googleusercontent.com";
-const SCOPES = ["openid", "email", "profile", "https://www.googleapis.com/auth/calendar","https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/tasks"];
+// Detect the browser from user agent
+const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+
+// Set CLIENT_ID based on the browser
+let CLIENT_ID;
+if (isFirefox) {
+  CLIENT_ID = "597587515735-9gfojisq4ih1o5mi1cj9a8h0dpqu70a7.apps.googleusercontent.com";
+} else if (isChrome) {
+  CLIENT_ID = "597587515735-4sgrn6oklulto7tj496gqo94jkttsgo9.apps.googleusercontent.com";
+} else {
+  console.error("Unsupported browser");
+  // Handle unsupported browsers if needed
+}
+
+const REDIRECT_URL = browserAPI.identity.getRedirectURL();
+console.log("REDIRECT_URL", REDIRECT_URL);
+
+const SCOPES = ["openid", "email", "profile", "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/tasks"];
+
+// Note: CLIENT_ID is now dynamically set
 const AUTH_URL = `https://accounts.google.com/o/oauth2/auth\
 ?client_id=${CLIENT_ID}\
 &response_type=token\
 &redirect_uri=${encodeURIComponent(REDIRECT_URL)}\
 &scope=${encodeURIComponent(SCOPES.join(" "))}`;
+
 const VALIDATION_BASE_URL = "https://www.googleapis.com/oauth2/v3/tokeninfo";
+
 
 function extractAccessToken(redirectUri) {
   if (typeof redirectUri !== "string") {
@@ -51,12 +70,28 @@ async function validate(redirectURL) {
 }
 
 async function authorize() {
-  const redirectURL = await browser.identity.launchWebAuthFlow({
-    interactive: true,
-    url: AUTH_URL,
-  });
-  return validate(redirectURL);
+  try {
+    const redirectURL = await new Promise((resolve, reject) => {
+      browserAPI.identity.launchWebAuthFlow(
+        {
+          interactive: true,
+          url: AUTH_URL,
+        },
+        (responseURL) => {
+          if (browserAPI.runtime.lastError) {
+            return reject(new Error(browserAPI.runtime.lastError));
+          }
+          resolve(responseURL);
+        }
+      );
+    });
+    return validate(redirectURL);
+  } catch (error) {
+    console.error("Failed to get access token: ", error);
+    throw error;
+  }
 }
+
 
 async function getAccessToken() {
   try {

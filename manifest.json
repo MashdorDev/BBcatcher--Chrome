@@ -1,12 +1,11 @@
 {
   "name": "BBcatcher",
   "version": "0.0.1",
-  "manifest_version": 2,
-  "description": "Brings all you Exams quiz's and homework to your schedule ",
+  "manifest_version": 3,
+  "description": "Brings all you Exams quiz's and homework to your schedule",
   "icons": {
     "64": "icons/icon.png"
   },
-  "key":"QkJjYXRjaGVyIEJ5IERvciBaYWlyaQ==",
   "browser_specific_settings": {
     "gecko": {
       "id": "BBcatcher@mozilla.org",
@@ -14,20 +13,17 @@
     }
   },
   "background": {
-    "scripts": [
-      "background/declare_browserAPI.js",
-      "background/main.js",
-      "background/authorize.js",
-      "background/userinfo.js"
-    ]
+    "service_worker": "service-worker.js"
   },
   "permissions": [
-    "<all_urls>",
     "webNavigation",
     "tabs",
     "activeTab",
     "identity",
-    "notifications",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>",
     "*://www.googleapis.com/*",
     "*://accounts.google.com/*"
   ],
@@ -39,8 +35,10 @@
       "run_at": "document_idle"
     }
   ],
-  "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'",
-  "browser_action": {
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "action": {
     "default_icon": {
       "64": "icons/icon.png"
     },

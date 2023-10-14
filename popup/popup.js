@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const logoutBtn = document.getElementById("logoutBtn");
   const homeWorkButton = document.getElementById("homework");
 
-  if (!localStorage.getItem("accessToken")) {
+  if (!localStorage.getItem("userInfo")) {
     loginBtn.style.display = "block";
     logoutBtn.style.display = "none";
     homeWorkButton.style.display = "none";
@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.getElementById("logoutBtn").addEventListener("click", () => {
   // Remove the access token from localStorage
   localStorage.removeItem("accessToken");
+  localStorage.removeItem("userInfo");
   // Optionally, send a message to background script to invalidate the token
   browserAPI.runtime.sendMessage({ action: "logout" });
   // Update UI to show login button and hide other elements
